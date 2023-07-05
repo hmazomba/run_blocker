@@ -1,0 +1,11 @@
+langchain==0.0.220 
+gpt4all==0.3.6
+huggingface_hub
+sentence_transformers
+faiss-cpu
+unstructured
+chromadb
+unstructured[local-inference]
+Cython
+tiktoken
+sentence_transformers
