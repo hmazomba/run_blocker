@@ -1,5 +1,5 @@
-langchain==0.0.220 
-gpt4all==0.3.6
+langchain
+gpt4all
 huggingface_hub
 sentence_transformers
 faiss-cpu
