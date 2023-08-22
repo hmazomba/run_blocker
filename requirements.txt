@@ -8,4 +8,5 @@ chromadb
 unstructured[local-inference]
 Cython
 tiktoken
-sentence_transformers
+Flask
+beautifulsoup4
