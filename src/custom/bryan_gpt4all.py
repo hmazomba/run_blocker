@@ -1,5 +1,7 @@
 from langchain import OpenAI, LLMChain, PromptTemplate
 from langchain.memory import ConversationBufferWindowMemory
+from langchain.llms import GPT4All
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 
 
 template = """Assistant is a large language model trained by OpenAI.
@@ -17,10 +19,18 @@ Human: {human_input}
 Assistant:"""
 
 prompt = PromptTemplate(input_variables=["history", "human_input"], template=template)
+#GPT4All Model Local Path
+local_path = (
+    "../../../../Models/GPT4ALL/llama-2-7b-chat.ggmlv3.q4_0.bin"  # replace with your desired local file path
+)
+# Callbacks support token-wise streaming
+callbacks = [StreamingStdOutCallbackHandler()]
 
+# Verbose is required to pass to the callback manager
+llm = GPT4All(model="../../../../Models/GPT4ALL/llama-2-7b-chat.ggmlv3.q4_0.bin" , callbacks=callbacks, verbose=True)
 
-chatgpt_chain = LLMChain(
-    llm=OpenAI(temperature=0),
+gpt4all_chain = LLMChain(
+    llm=llm,
     prompt=prompt,
     verbose=True,
     memory=ConversationBufferWindowMemory(k=2),
@@ -50,7 +60,7 @@ def listen():
                 print("Recognizing...")
                 # whisper model options are found here: https://github.com/openai/whisper#available-models-and-languages
                 # other speech recognition models are also available.
-                text = r.recognize_whisper(
+                text = r.recognize_speech(
                     audio,
                     model="medium.en",
                     show_dict=True,
@@ -62,7 +72,7 @@ def listen():
                 text = unrecognized_speech_text
             print(text)
 
-            response_text = chatgpt_chain.predict(human_input=text)
+            response_text = gpt4all_chain.predict(human_input=text)
             print(response_text)
             engine.say(response_text)
             engine.runAndWait()
