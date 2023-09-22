@@ -2,7 +2,6 @@ langchain
 gpt4all
 huggingface_hub
 sentence_transformers
-faiss-cpu
 unstructured
 chromadb
 unstructured[local-inference]
@@ -10,3 +9,5 @@ Cython
 tiktoken
 Flask
 beautifulsoup4
+playwright
+duckduckgo-search
