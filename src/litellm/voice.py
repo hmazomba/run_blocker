@@ -89,8 +89,7 @@ language_model = 'en-US'
 
 # Define a function to query the LLM API
 def completion(model_name, messages):
-    # Set the environment variables for the LLM API keys
-    os.environ["OPENAI_API_KEY"] = "your_openai_api_key"
+    # Set the environment variables for the LLM API keys os.environ["OPENAI_API_KEY"] = "your_openai_api_key"
     os.environ["COHERE_API_KEY"] = "your_cohere_api_key"
 
     # Call the LLM API
@@ -105,7 +104,7 @@ def recognize_and_speak(audio):
         transcript = r.recognize_google(audio, language=language_model)
         
         # Query the LLM API
-        response = completion('gpt-3.5-turbo', [transcript])
+        response = completion('command-nightly', [transcript])
         
         # Synthesize text
         engine.setProperty('voice', voice_model)
