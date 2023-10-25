@@ -11,3 +11,4 @@ Flask
 beautifulsoup4
 playwright
 duckduckgo-search
+elevenlabs
