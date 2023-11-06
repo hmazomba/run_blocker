@@ -1,4 +1,9 @@
 {
     "python.pythonPath": "/home/hmazomba/Projects/run_blocker/Proteus/venv/bin/python",
-    "workbench.colorTheme": "Bearded Theme Black & Emerald"
+    "workbench.colorTheme": "Dark Horizon",
+    "python.testing.pytestArgs": [
+        "src"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
 }
