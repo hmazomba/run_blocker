@@ -1,6 +1,6 @@
 {
     "python.pythonPath": "/home/hmazomba/Projects/run_blocker/Proteus/venv/bin/python",
-    "workbench.colorTheme": "Dark Horizon",
+    "workbench.colorTheme": "Jupyter Theme Dark",
     "python.testing.pytestArgs": [
         "src"
     ],
