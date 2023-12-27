@@ -2,7 +2,7 @@ import os
 import tempfile
 import streamlit as st
 from langchain.chat_models import ChatCohere
-from langchain.document_loaders import PyPDFLoader
+from langchain.document_loaders import PyPDFLoader, DirectoryLoader,TextLoader, PyPDFDirectoryLoader, PyPDFLoader, CSVLoader
 from langchain.memory import ConversationBufferMemory
 from langchain.memory.chat_message_histories import StreamlitChatMessageHistory
 from langchain.embeddings import HuggingFaceEmbeddings, CohereEmbeddings
@@ -10,7 +10,7 @@ from langchain.callbacks.base import BaseCallbackHandler
 from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.chains import ConversationalRetrievalChain
-from langchain.vectorstores import DocArrayInMemorySearch
+from langchain.vectorstores import DocArrayInMemorySearch, Chroma
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 st.set_page_config(page_title="LangChain: Chat with Documents powered by Cohere", page_icon="🦜")
@@ -23,10 +23,15 @@ def configure_retriever(uploaded_files):
     temp_dir = tempfile.TemporaryDirectory()
     for file in uploaded_files:
         temp_filepath = os.path.join(temp_dir.name, file.name)
+        temp_path = temp_dir.name 
         with open(temp_filepath, "wb") as f:
             f.write(file.getvalue())
-        loader = PyPDFLoader(temp_filepath)
-        docs.extend(loader.load())
+        pdf_loader = DirectoryLoader(temp_path, glob="**/*.pdf", loader_cls=PyPDFLoader)
+        txt_loader = DirectoryLoader(temp_path, glob="**/*.txt", loader_cls=TextLoader)
+        csv_loader = DirectoryLoader(temp_path, glob="**/*.csv", loader_cls=CSVLoader)
+        loaders = [pdf_loader, txt_loader, csv_loader]
+        for loader in loaders:
+            docs.extend(loader.load())
 
     # Split documents
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1500, chunk_overlap=200)
@@ -34,7 +39,7 @@ def configure_retriever(uploaded_files):
 
     # Create embeddings and store in vectordb
     embeddings = CohereEmbeddings()
-    vectordb = DocArrayInMemorySearch.from_documents(splits, embeddings)
+    vectordb = Chroma.from_documents(splits, embeddings)
 
     # Define retriever
     retriever = vectordb.as_retriever()
@@ -74,16 +79,16 @@ class PrintRetrievalHandler(BaseCallbackHandler):
             self.status.markdown(doc.page_content)
         self.status.update(state="complete")
         
-cohere_api_key = st.sidebar.text_input("Cohere API Key", type="password")
+""" cohere_api_key = st.sidebar.text_input("Cohere API Key", type="password")
 if not cohere_api_key:
     st.info("Please add your Cohere API key to continue.")
     st.stop()
-
+ """
 uploaded_files = st.sidebar.file_uploader(
-    label="Upload PDF files", type=["pdf"], accept_multiple_files=True
+    label="Upload PDF files", type=["pdf", "txt", "csv"], accept_multiple_files=True
 )
 if not uploaded_files:
-    st.info("Please upload PDF documents to continue.")
+    st.info("Please upload documents to continue.")
     st.stop()
 
 retriever = configure_retriever(uploaded_files)
