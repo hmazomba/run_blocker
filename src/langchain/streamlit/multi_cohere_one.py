@@ -104,7 +104,7 @@ llm = ChatCohere(
     callback_manager=CallbackManager([StreamingStdOutCallbackHandler()]),
 )
 qa_chain = ConversationalRetrievalChain.from_llm(
-    llm, retriever=retriever, memory=memory, verbose=True
+    llm, retriever=retriever, memory=memory, verbose=True,
 )
 
 if len(msgs.messages) == 0 or st.sidebar.button("Clear message history"):
